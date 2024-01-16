@@ -38,7 +38,7 @@ const CustomersPage = (props) => {
 
     useEffect(()=>{
         fetchCustomers()
-    },[customers])
+    },[])
 
     // pour la pagination 
     const handlePageChange = (page) => {
