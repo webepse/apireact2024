@@ -8,33 +8,42 @@ import InvoicesPage from "./pages/InvoicesPage";
 import LoginPage from "./pages/LoginPage";
 import authAPI from "./services/authAPI";
 import PrivateRoute from './components/PrivateRoute';
+import AuthContext from './contexts/AuthContext';
 
 authAPI.setup()
 
 const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(authAPI.isAuthenticated())
 
-  return ( 
-    <Router>
-      <Navbar isAuthenticated={isAuthenticated} onLogout={setIsAuthenticated} />
-      <main className="container pt-5">
-        <Routes>
-          <Route path="/login" element={<LoginPage onLogin={setIsAuthenticated} />} />
-          <Route path="/invoices" element={
-            <PrivateRoute isAuthenticated={isAuthenticated}>
-              <InvoicesPage />
-            </PrivateRoute>
-          } />
-          <Route path="/customerpage" element={<CustomersPageWithPagination />} />
-          <Route path="/customers" element={
-            <PrivateRoute isAuthenticated={isAuthenticated}>
-              <CustomersPage />
-            </PrivateRoute>
-          } />
-          <Route path="/" element={<HomePage />} />
-        </Routes>
-      </main>
-    </Router>
+  // on donne les infos à la forme de notre contexte
+  const contextValue = {
+    isAuthenticated: isAuthenticated,
+    setIsAuthenticated: setIsAuthenticated
+  }
+
+  return (
+    <AuthContext.Provider value={contextValue}> 
+      <Router>
+        <Navbar />
+        <main className="container pt-5">
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/invoices" element={
+              <PrivateRoute>
+                <InvoicesPage />
+              </PrivateRoute>
+            } />
+            <Route path="/customerpage" element={<CustomersPageWithPagination />} />
+            <Route path="/customers" element={
+              <PrivateRoute>
+                <CustomersPage />
+              </PrivateRoute>
+            } />
+            <Route path="/" element={<HomePage />} />
+          </Routes>
+        </main>
+      </Router>
+    </AuthContext.Provider>
    );
 }
  
