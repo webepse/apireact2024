@@ -9,6 +9,7 @@ import LoginPage from "./pages/LoginPage";
 import authAPI from "./services/authAPI";
 import PrivateRoute from './components/PrivateRoute';
 import AuthContext from './contexts/AuthContext';
+import CustomerPage from './pages/CustomerPage';
 
 authAPI.setup()
 
@@ -34,6 +35,11 @@ const App = () => {
               </PrivateRoute>
             } />
             <Route path="/customerpage" element={<CustomersPageWithPagination />} />
+            <Route path="/customers/:id" element={
+              <PrivateRoute>
+                <CustomerPage />
+              </PrivateRoute>
+            } />
             <Route path="/customers" element={
               <PrivateRoute>
                 <CustomersPage />
