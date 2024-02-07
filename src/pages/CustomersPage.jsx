@@ -50,6 +50,22 @@ const CustomersPage = (props) => {
 
     const paginatedCustomers = Pagination.getData(filteredCustomers, currentPage, itemsPerPage)
 
+    const handleDelete = async (id) => {
+        // pessimiste 
+        const originalCustomers = [...customers]
+
+        // optimiste
+        setCustomers(customers.filter(customer => customer.id !==id))
+
+        try{
+            await customersAPI.delete(id)
+        }catch(error)
+        {
+            setCustomers(originalCustomers)
+            // notif 
+        }
+    }
+
     return ( 
         <>
             <div className="d-flex justify-content-between align-items-center">
@@ -92,11 +108,13 @@ const CustomersPage = (props) => {
                             </td>
                             <td>
                                 <Link className="btn btn-sm btn-warning m-1" to={`/customers/${customer.id}`}>Editer</Link>
-                                <button className="btn btn-sm btn-danger m-1">Supprimer</button>
+                                <button 
+                                    className="btn btn-sm btn-danger m-1"
+                                    disabled={customer.invoices.length > 0} 
+                                    onClick={() => handleDelete(customer.id)}>Supprimer</button>
                             </td>
                         </tr>
                     ))}
-                    
                 </tbody>
             </table>
             {
