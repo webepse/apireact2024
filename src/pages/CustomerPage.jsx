@@ -115,7 +115,7 @@ const CustomerPage = (props) => {
                     error={errors.company}
                 />
                 <div className="my-3">
-                    {editing ? <button type="submit" className='btn btn-warning'>Modifier</button> : <button type="submit" className='btn btn-success'>Créer</button>}
+                    {editing ? <button type="submit" className='btn btn-warning me-1'>Modifier</button> : <button type="submit" className='btn btn-success me-1'>Créer</button>}
                     
                     <Link to="/customers" className='btn btn-secondary'>Retour aux clients</Link>
                 </div>
