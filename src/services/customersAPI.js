@@ -1,26 +1,27 @@
 import Axios from 'axios'
+import { CUSTOMERS_API } from '../config'
 
 function findAll(){
-    return Axios.get("http://apicourse.myepse.be/api/customers/")
+    return Axios.get(CUSTOMERS_API)
                 .then(response => response.data['hydra:member'])
 }
 
 function find(id){
-    return Axios.get(`http://apicourse.myepse.be/api/customers/${id}`)
+    return Axios.get(`${CUSTOMERS_API}/${id}`)
                 .then(response => response.data)
 }
 
 function deleteCustomer(id){
-    return Axios.delete(`http://apicourse.myepse.be/api/customers/${id}`)
+    return Axios.delete(`${CUSTOMERS_API}/${id}`)
 }
 
 function updateCustomer(id, customer){
-    return Axios.put(`http://apicourse.myepse.be/api/customers/${id}`, customer)
+    return Axios.put(`${CUSTOMERS_API}/${id}`, customer)
 }
 
 function createCustomer(customer){
     console.log(customer)
-    return Axios.post("http://apicourse.myepse.be/api/customers", customer)
+    return Axios.post(CUSTOMERS_API, customer)
 }
 
 export default {
