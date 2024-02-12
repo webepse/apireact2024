@@ -32,9 +32,22 @@ const InvoicePage = (props) => {
         try{
             const data = await customersAPI.findAll()
             setCustomers(data)
+            if(id === "new") setInvoice({...invoice, customer: data[0].id})
         }catch(error)
         {
             navigate("/invoices", {replace: true})
+            // notif à faire
+        }
+    }
+
+    const fetchInvoice = async id => {
+        try{
+            const {amount, status, customer, chrono} = await invoicesAPI.find(id)
+            setInvoice({amount, status, customer: customer.id, chrono})
+        }catch(error)
+       {
+            navigate("/invoices", {replace: true})
+            // notif à faire
         }
     }
 
@@ -42,16 +55,53 @@ const InvoicePage = (props) => {
         fetchCustomers()
     },[])
 
+    useEffect(()=>{
+        if(id !=="new")
+        {
+            // récup la facture avec son id et modifier le state editing
+            fetchInvoice(id)
+            setEditing(true)
+        }
+    },[id])
+
     const handleChange = (event) => {
         const {name, value} = event.currentTarget
         setInvoice({...invoice, [name]:value})
     }
 
+    const handleSubmit = async (event) => {
+        event.preventDefault()
+        try{
+            // ça dépend du mode édition 
+            if(editing)
+            {
+                // update
+                await invoicesAPI.update(id, invoice)
+                // notif
+            }else{
+                // create
+                await invoicesAPI.create(invoice)
+                // redirection + notif
+                navigate("/invoices", {replace: true})
+            }
+        }catch({response})
+        {
+            const {violations} = response.data
+            if(violations){
+                const apiErros = {}
+                violations.forEach(({propertyPath, message}) => {
+                    apiErros[propertyPath] = message
+                })
+                setErrors(apiErros)
+            }
+        }
+    }
+
 
     return ( 
         <>
-            {editing ? <h1>Modification d'une facteur</h1> : <h1>Création d'une facture</h1>}
-            <form>
+            {editing ? <h1>Modification d'une facture</h1> : <h1>Création d'une facture</h1>}
+            <form onSubmit={handleSubmit}>
                 <Field 
                     name="amount"
                     type="number"
